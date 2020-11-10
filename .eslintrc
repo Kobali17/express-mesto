@@ -2,10 +2,10 @@
   "extends": "airbnb-base",
   "rules": {
     "no-underscore-dangle": [
-      1,
+      2,
       {
         "allow": [
-          "id"
+          "_id"
         ]
       }
     ]

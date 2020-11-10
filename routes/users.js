@@ -3,7 +3,8 @@ const router = require('express').Router();
 const path = require('path');
 const fsPromises = require('fs').promises;
 
-const sendUser = (req, res, next) => fsPromises.readFile(path.join(__dirname, '../data/users.json'), { encoding: 'utf8' }).then((data) => {
+const sendUser = (req, res, next) => fsPromises.readFile(path.join(__dirname, '../data/users.json'),
+  { encoding: 'utf8' }).then((data) => {
   const users = JSON.parse(data);
   const thisUsers = users.filter((user) => user._id === req.params.id);
   if (thisUsers.length === 0) {
