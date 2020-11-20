@@ -14,9 +14,11 @@ module.exports.getCards = (req, res) => {
   }).catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
-module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.id).then((card) => res.send(card))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+module.exports.deleteCard = (req, res, next) => {
+  Card.findByIdAndDelete(req.params.cardId).orFail().then(() => {
+    res.status(200).send();
+  })
+    .catch(next);
 };
 
 module.exports.likeCard = (req, res, next) => {
@@ -24,12 +26,8 @@ module.exports.likeCard = (req, res, next) => {
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
-  ).then((card) => {
-    if (card == null) {
-      res.status(404).send({ message: 'Карточка не найдена' });
-    } else {
-      res.send(card);
-    }
+  ).orFail().then((card) => {
+    res.send(card);
   }).catch(next);
 };
 module.exports.dislikeCard = (req, res, next) => {
@@ -37,11 +35,7 @@ module.exports.dislikeCard = (req, res, next) => {
     req.params.cardId,
     { $pull: { likes: req.user._id } },
     { new: true },
-  ).then((card) => {
-    if (card == null) {
-      res.status(404).send({ message: 'Карточка не найдена' });
-    } else {
-      res.send(card);
-    }
+  ).orFail().then((card) => {
+    res.send(card);
   }).catch(next);
 };

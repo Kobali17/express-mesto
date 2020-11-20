@@ -29,9 +29,11 @@ app.get('*', (req, res, next) => {
   next();
 });
 app.use((err, req, res, next) => {
-  console.error(err instanceof mongoose.Error.ValidatorError);
-  if (err instanceof mongoose.Error.ValidationError || err instanceof mongoose.Error.ValidatorError) {
-    res.status(400).send({ message: 'Переданы некорректные данные' });
+  console.error(err);
+  if (err instanceof mongoose.Error.ValidationError || err instanceof mongoose.Error.ValidatorError || mongoose.Error.CastError) {
+    res.status(400).send({ message: 'Переданы некорректные данные', details: err });
+  } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
+    res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
   } else {
     res.status(err.statusCode).send(err.message);
   }

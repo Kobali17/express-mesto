@@ -15,24 +15,20 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  User.findById(req.params.id).then((user) => {
-    if (user == null) {
-      res.status(404).send({ message: 'Пользователь не найден' });
-    } else {
-      res.send(user);
-    }
+  User.findById(req.params.id).orFail().then((user) => {
+    res.send(user);
   })
     .catch(next);
 };
 module.exports.updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }).then((users) => {
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true }).then((users) => {
     res.send(users);
   }).catch(next);
 };
 module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }).then((users) => {
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true }).then((users) => {
     res.send(users);
   }).catch(next);
 };
